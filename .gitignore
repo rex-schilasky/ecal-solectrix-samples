@@ -1,0 +1,20 @@
+# CMake build folders
+/_build*
+/_setup
+/_vs_out*
+
+# Visual Studio cache/options directory
+.vs/
+
+# Visual Studio code
+*.vscode
+
+# Clion
+.idea
+cmake-build-*
+
+# windows
+Thumbs.db
+
+# macOS
+.DS_Store
