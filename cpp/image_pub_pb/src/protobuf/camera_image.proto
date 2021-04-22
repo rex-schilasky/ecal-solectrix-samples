@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package pb.solectrix;
+
+message Header
+{
+  enum TimeStampSource
+  {
+    UNKNOWN_SOURCE              =  0;
+    SENSOR                      =  1;
+    ALGO                        =  2;
+  }
+
+  enum TimeStampSyncState
+  {
+    UNKNOWN_SYNC                =  0;                // No information on the sync state at all
+    NOT_SYNCED                  =  1;                // timestamp is not synced at all
+    SYNCED_PTP                  =  2;                // timestamp is synced with PTP mechanism
+  }
+
+  int64               timestamp             =  1;    // [0,...,2**64] [10**-6*s] Timestamp value in microseconds
+  TimeStampSource     timestamp_source      =  2;    // Source of the timestamp
+  TimeStampSyncState  timestamp_sync_state  =  3;    // Sync state of the timestamp
+}
+
+message BaseImage
+{
+  enum ChannelFormat
+  {
+    CHANNEL_UNDEFINED           =  0;
+    GREY                        =  1;                // one channel grey scale
+    RAW                         =  2;                // one channel bayer pattern, see enum BayerPattern
+    RGB                         =  3;                // three channels RGB
+    BGR                         =  4;                // three channels BGR
+    RGBA                        =  5;                // RGB with alpha channel
+  }
+
+  enum BayerPattern
+  {
+    PATTERN_UNDEFINED           =  0;
+    GBRG                        =  1;
+    GRBG                        =  2;
+    BGGR                        =  3;
+    RGGB                        =  4;
+  }
+
+  enum PixelFormat
+  {
+    PIXEL_UNDEFINED             =  0;
+    SIGNED                      =  1;
+    UNSIGNED                    =  2;
+    FLOAT                       =  3;
+  }
+
+  enum Compression
+  {
+    COMPRESSION_UNDEFINED       =  0;
+    UNCOMPRESSED                =  1;
+    JPEG                        =  2;
+    PNG                         =  3;
+  }
+
+  uint32         width          =  1;
+  uint32         height         =  2;
+  uint32         bitsPerPixel   =  3;
+  ChannelFormat  channelFormat  =  4;
+  BayerPattern   bayerPattern   =  5;
+  PixelFormat    pixelFormat    =  6;
+  Compression    compression    =  7;
+  uint32         dataSize       =  8;
+  bytes          imageData      =  9;
+}
+
+message CameraImage
+{
+  Header         header         =  1;
+  BaseImage      camera_data    =  2;
+}

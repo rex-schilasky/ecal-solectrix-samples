@@ -30,7 +30,7 @@ set(image_pub_pb_src
 )
 
 set(image_pub_pb_proto
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/protobuf/image.proto
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/protobuf/camera_image.proto
 )
 ecal_add_sample(${PROJECT_NAME} ${image_pub_pb_src})
 PROTOBUF_TARGET_CPP(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/src/protobuf ${image_pub_pb_proto})

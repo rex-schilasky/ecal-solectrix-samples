@@ -6,7 +6,7 @@
 #include <thread>
 #include <vector>
 
-#include "image.pb.h"
+#include "camera_image.pb.h"
 
 int main(int argc, char **argv)
 {
@@ -15,17 +15,17 @@ int main(int argc, char **argv)
   std::cout << "-------------------------------------------" << std::endl;
 
   // initialize eCAL API
-  eCAL::Initialize(argc, argv, "protobuf image publisher");
+  eCAL::Initialize(argc, argv, "solectrix image publisher (protobuf)");
 
   // create the publisher
-  eCAL::protobuf::CPublisher<solectrix::Image> pub("image_pb");
+  eCAL::protobuf::CPublisher<pb::solectrix::CameraImage> pub("image_pb");
 
   // generate a class instance of Image
-  solectrix::Image image;
+  pb::solectrix::CameraImage image;
 
   // vector that contains the image binary data
-  std::vector<char> image_buf;
-  image_buf.resize(1024);
+  std::vector<char> image_data;
+  image_data.resize(1024);
 
   // send updates
   while(eCAL::Ok())
@@ -33,12 +33,19 @@ int main(int argc, char **argv)
     // log it
     std::cout << "Send image .." << std::endl;
 
-    // set image content
-    image.set_width(1920);
-    image.set_height(1080);
-    image.set_payload(image_buf.data(), image_buf.size());
+    // set image header
+    auto iheader = image.mutable_header();
+    iheader->set_timestamp(1234);
+    iheader->set_timestamp_source(pb::solectrix::Header_TimeStampSource::Header_TimeStampSource_SENSOR);
+    iheader->set_timestamp_sync_state(pb::solectrix::Header_TimeStampSyncState::Header_TimeStampSyncState_SYNCED_PTP);
 
-    // send the person object
+    // set image data
+    auto idata = image.mutable_camera_data();
+    idata->set_width(1920);
+    idata->set_height(1080);
+    idata->set_imagedata(image_data.data(), image_data.size());
+
+    // send image
     pub.Send(image);
 
     // sleep 500 ms
